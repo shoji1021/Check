@@ -8,8 +8,8 @@ https://gps-1hf.pages.dev/
 2. このリポジトリをクローンまたはダウンロードしてから実行してください
 
    ```bash
-   git clone https://github.com/shoji1021/gps.git
-   cd gps
+   git clone https://github.com/shoji1021/Check.git
+   cd Check
 
 ## 概要
 ブラウザの位置情報APIと通知APIを活用し、**自宅や任意の登録地点から一定距離を離れたら通知する**忘れ物防止Webアプリ。すべてクライアントサイドで動作し、サーバー不要・通信不要。
