@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="image/gps.ico">
-  <2?family=Roboto+Mono&display=swap');
+  <title>位置連動忘れ物チェック</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
     :root {
       --bg-color: #121212;
       --primary-color: #1e88e5;
@@ -14,18 +17,34 @@
       --border-radius: 12px;
       --shadow-color: rgba(0, 0, 0, 0.6);
     }
+
     * { box-sizing: border-box; }
+
     body {
       background-color: var(--bg-color);
       color: var(--text-color);
-      font-family: 'Roboto Mono', monospace, monospace;
-      margin: 0; padding: 2rem 1rem;
-      display: flex; justify-content: center;
-      min-height: 100vh      font-weight: 700; font-size: 2rem;
-      margin-bottom: 1rem; text-align: center;
+      font-family: 'Roboto Mono', monospace;
+      margin: 0;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    main {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
       color: var(--primary-color);
       text-shadow: 0 0 8px var(--primary-color);
     }
+
     .card {
       background-color: var(--card-bg);
       border-radius: var(--border-radius);
@@ -33,68 +52,126 @@
       box-shadow: 0 6px 12px var(--shadow-color);
       margin-bottom: 1.5rem;
     }
+
     label {
-      display: block; font-size: 0.9rem;
-      margin-bottom: 0.3rem; user-select: none; color: #bbb;
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      user-select: none;
+      color: #bbb;
     }
-    input[type="number"], input[type="text"] {
-      width: 100%; padding: 0.6rem 0.9c;
+
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #2c2c2c;
       color: var(--text-color);
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
       transition: background-color 0.3s ease;
     }
-    input[type="number"]:focus, input[type="text"]:focus {
-     : 0 0 8px var(--primary-color);
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      background-color: #383838;
+      outline: none;
+      box-shadow: 0 0 8px var(--primary-color);
     }
-    .meters{ margin-top: 0.7rem; }
+    .meters { margin-top: 0.7rem; }
+
     button {
-      margin-top: 1rem; padding: 0.65rem 1.2rem; font-size: 1rem;
-      font-weight: 600; color: white; background-color: var(--primary-color);
-      border: none; border-radius: 32px; cursor: pointer;
+      margin-top: 1rem;
+      padding: 0.65rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background-color: var(--primary-color);
+      border: none;
+      border-radius: 32px;
+      cursor: pointer;
       box-shadow: 0 4px 10px var(--primary-color);
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none; display: inline-block;
+      user-select: none;
+      display: inline-block;
     }
     button:hover:not(:disabled) {
       background-color: var(--primary-hover);
       box-shadow: 0 6px 14px var(--primary-hover);
     }
     button:disabled {
-      background-color: #555; cursor: default; box-shadow: none;
+      background-color: #555;
+      cursor: default;
+      box-shadow: none;
     }
+
     #distance-info {
-      text-align: center; font-size: 1.1rem;
-      margin-bottom: 1rem; color: #aaa;
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #aaa;
     }
+
     #checklist ul {
-      list-style: none; padding: 0; margin: 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
     }
+
     #checklist li {
-      background-color: #2a2a2a; border-radius: 8px; padding: 0.8rem 1rem;
-      margin-bottom: 0.8rem; display: flex;
-      align-items: center; gap: 0.8rem;
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
       transition: background-color 0.3s ease;
-      cursor: pointer; user-select: none;
+      cursor: pointer;
+      user-select: none;
     }
-    #checklist li:hover{ background-color: #3a3a3a; }
+    #checklist li:hover {
+      background-color: #3a3a3a;
+    }
     #checklist input[type="checkbox"] {
-      width: 18px; height: 18px; cursor: pointer;
-      accent-color: var(--primary-color); flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--primary-color);
+      flex-shrink: 0;
     }
-    #new-item { margin-top: 0.6rem; width: calc(100% - 6rem); display: inline-block; vertical-align: middle; }
-    #btn-add-item { width: 4.5rem; vertical-align: middle; }
-    #meters{ width: calc(100% - 6rem); display: inline-block; vertical-align: middle; }
+
+    #new-item {
+      margin-top: 0.6rem;
+      width: calc(100% - 6rem);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #btn-add-item {
+      width: 4.5rem;
+      vertical-align: middle;
+    }
+    #meters {
+      width: calc(100% - 6rem);
+      display: inline-block;
+      vertical-align: middle;
+    }
+
     @media (max-width: 520px) {
       body { padding: 1rem 0.5rem; }
       main { padding: 0 1rem; }
     }
+
     .hidden { display: none; }
   </style>
 </head>
 <body>
   <main>
     <h1>位置連動忘れ物チェック</h1>
+
     <section id="setup-section" class="card">
       <p>自宅の位置を設定してください（手入力か「現在地取得」ボタンで）:</p>
       <label>
@@ -112,7 +189,9 @@
         <input type="number" id="meters" placeholder="例: 10" />
       </label>
     </section>
+
     <div id="distance-info"></div>
+
     <section id="checklist" class="card hidden">
       <h2>忘れ物チェックリスト</h2>
       <ul id="items-list"></ul>
@@ -120,20 +199,26 @@
       <button id="btn-add-item">追加</button>
     </section>
   </main>
+
 <script>
-// Cookieユーティリティ
+/* Cookieユーティリティ */
 function setCookie(key, value) {
-  document9 23:59:59 GMT; path=/`;
+  document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(value) + "; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
 }
 function getCookie(key) {
-  const cookies = document.cookie.split(';').map(c => c.trim().split('='));
-  const found = cookies.find(([k]) => decodeURIComponent(k) === key);
-  return found ? decodeURIComponent(found[1]) : null;
+  const name = encodeURIComponent(key) + "=";
+  const parts = document.cookie.split(';');
+  for (let i = 0; i < parts.length; i++) {
+    let c = parts[i].trim();
+    if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length));
+  }
+  return null;
 }
 
+/* DOM */
 const homeLatInput = document.getElementById('home-lat');
 const homeLngInput = document.getElementById('home-lng');
-const DISTANCE_THRESHOLD = document.getElementById('meters');
+const DISTANCE_THRESHOLD_INPUT = document.getElementById('meters');
 const btnGetLocation = document.getElementById('btn-get-location');
 const btnSaveHome = document.getElementById('btn-save-home');
 const distanceInfo = document.getElementById('distance-info');
@@ -151,10 +236,11 @@ function loadChecklist() {
   if (!json) return [];
   try { return JSON.parse(json); } catch { return []; }
 }
-// --------- 入力変更時にCookie保存 ----------
-DISTANCE_THRESHOLD.addEventListener('input', e => setCookie('distanceThreshold', e.target.value));
+
+/* 即時保存：input変更でCookieに反映 */
 homeLatInput.addEventListener('input', e => setCookie('homeLatitude', e.target.value));
 homeLngInput.addEventListener('input', e => setCookie('homeLongitude', e.target.value));
+DISTANCE_THRESHOLD_INPUT.addEventListener('input', e => setCookie('distanceThreshold', e.target.value));
 
 function renderChecklist() {
   const items = loadChecklist();
@@ -167,13 +253,9 @@ function renderChecklist() {
     checkbox.checked = false;
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
-        items.splice(idx,1);
+        items.splice(idx, 1);
         saveChecklist(items);
-        renderChecklist();
-      }
-    });
-    const label = document.createElement('label');
-    label.htmlFor = checkbox.id;
+       For = checkbox.id;
     label.textContent = item;
     li.appendChild(checkbox);
     li.appendChild(label);
@@ -181,7 +263,7 @@ function renderChecklist() {
   });
 }
 
-// 通知許可・Service Worker（元のまま）
+/* 通知・Service Worker・距離計算（元のロジック） */
 async function requestNotificationPermission() {
   if (!('Notification' in window)) {
     alert('このブラウザは通知に対応していません。');
@@ -194,15 +276,20 @@ async function requestNotificationPermission() {
   }
   return false;
 }
+
 async function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service Worker registered', reg);
       return reg;
-    } catch (e) {}
+    } catch (e) {
+      console.error('Service Worker登録失敗:', e);
+    }
   }
   return null;
 }
+
 function showNotification(title, options) {
   if (Notification.permission === 'granted') {
     navigator.serviceWorker.getRegistration().then(reg => {
@@ -211,16 +298,20 @@ function showNotification(title, options) {
     });
   }
 }
+
 function toRad(deg) { return deg * Math.PI / 180; }
 function getDistance(lat1, lng1, lat2, lng2) {
   const R = 6371000;
   const dLat = toRad(lat2 - lat1);
   const dLng = toRad(lng2 - lng1);
-  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+  const a =
+    Math.sin(dLat/2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
+/* 通知のクールダウン */
 let lastNotifyTime = 0;
 const NOTIFY_COOLDOWN_MS = 5 * 60 * 1000; // 5分
 
@@ -235,6 +326,7 @@ async function checkDistanceAndNotify() {
   const homeLat = parseFloat(getCookie('homeLatitude'));
   const homeLng = parseFloat(getCookie('homeLongitude'));
   const distThreshold = parseFloat(getCookie('distanceThreshold'));
+
   if (isNaN(homeLat) || isNaN(homeLng)) {
     distanceInfo.textContent = '自宅の位置が設定されていません。';
     checklistDiv.classList.add('hidden');
@@ -245,6 +337,7 @@ async function checkDistanceAndNotify() {
     checklistDiv.classList.add('hidden');
     return;
   }
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       const curLat = pos.coords.latitude;
@@ -252,7 +345,7 @@ async function checkDistanceAndNotify() {
       const dist = getDistance(homeLat, homeLng, curLat, curLng);
       distanceInfo.textContent = `現在地は自宅から約 ${dist.toFixed(1)} m 離れています。`;
 
-      if (distThreshold && dist > distThreshold) {
+      if (!isNaN(distThreshold) && distThreshold > 0 && dist > distThreshold) {
         checklistDiv.classList.remove('hidden');
         const now = Date.now();
         if (now - lastNotifyTime > NOTIFY_COOLDOWN_MS) {
@@ -275,6 +368,7 @@ async function checkDistanceAndNotify() {
   );
 }
 
+/* ボタン操作 */
 btnGetLocation.addEventListener('click', () => {
   if (!navigator.geolocation) {
     alert('位置情報APIが利用できません。');
@@ -284,16 +378,17 @@ btnGetLocation.addEventListener('click', () => {
     (pos) => {
       homeLatInput.value = pos.coords.latitude.toFixed(6);
       homeLngInput.value = pos.coords.longitude.toFixed(6);
-      // 入力イベントによりCookieにも即反映
+      setCookie('homeLatitude', homeLatInput.value);
+      setCookie('homeLongitude', homeLngInput.value);
     },
     () => alert('現在地の取得に失敗しました。'),
     { enableHighAccuracy: true }
   );
 });
-// 設定を保存ボタンはCookieへ（既にinputイベントで保存はされるが明示的にも記録）
+
 btnSaveHome.addEventListener('click', () => {
   const lat = parseFloat(homeLatInput.value);
-(homeLngInput.value);
+  const lng = parseFloat(homeLngInput.value);
   if (isNaN(lat) || isNaN(lng)) {
     alert('有効な緯度・経度を入力してください。');
     return;
@@ -302,12 +397,11 @@ btnSaveHome.addEventListener('click', () => {
   setCookie('homeLongitude', lng);
   alert('自宅の位置を保存しました。');
   setupSection.classList.add('hidden');
-  checkDistanceAndNotify();
   renderChecklist();
+  checkDistanceAndNotify();
   setInterval(checkDistanceAndNotify, 60 * 1000);
 });
 
-// チェックリスト追加
 btnAddItem.addEventListener('click', () => {
   const item = newItemInput.value.trim();
   if (!item) return;
@@ -317,12 +411,14 @@ btnAddItem.addEventListener('click', () => {
   newItemInput.value = '';
   renderChecklist();
 });
-// ----------- ページ初回ロード時にCookieから復元 -----------
+
+/* 初期ロード：Cookieから復元 */
 window.addEventListener('load', () => {
   homeLatInput.value = getCookie('homeLatitude') || '';
   homeLngInput.value = getCookie('homeLongitude') || '';
-  DISTANCE_THRESHOLD.value = getCookie('distanceThreshold') || '';
+  DISTANCE_THRESHOLD_INPUT.value = getCookie('distanceThreshold') || '';
   renderChecklist();
+
   if (homeLatInput.value && homeLngInput.value) {
     setupSection.classList.add('hidden');
     checkDistanceAndNotify();
@@ -330,5 +426,6 @@ window.addEventListener('load', () => {
   }
 });
 </script>
+
 </body>
 </html>
