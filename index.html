@@ -258,10 +258,16 @@ function checkLocation() {
       const now = Date.now();
       if (now - lastNotifyTime > 300000) { // 5分間隔
         lastNotifyTime = now;
+        
         if (Notification.permission === 'granted') {
-          new Notification("忘れ物はないですか？", { 
-            body: `自宅から ${dist.toFixed(0)}m 離れました。リストを確認！`,
-            tag: 'forget-check'
+          // ▼▼▼ 変更: Service Worker経由で通知を出す ▼▼▼
+          navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification("忘れ物はないですか？", { 
+              body: `自宅から ${dist.toFixed(0)}m 離れました。リストを確認！`,
+              tag: 'forget-check',
+              icon: 'image/gps.ico', // アイコンがあれば指定
+              vibrate: [200, 100, 200] // バイブレーション（Android等）
+            });
           });
         }
       }
@@ -304,6 +310,13 @@ btnToggleSetup.addEventListener('click', () => {
 
 // --- 初期ロード ---
 window.onload = () => {
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW Registered!', reg))
+      .catch(err => console.log('SW Registration failed', err));
+  }
+
+
   if (Notification.permission !== 'denied') Notification.requestPermission();
   
   // Cookieから過去のデータを復元
