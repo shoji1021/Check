@@ -206,7 +206,7 @@ function checkLocation() {
 
     if(dist > th) {
       const now = Date.now();
-      if(now - lastNotifyTime > 300000) { // 5分間隔
+      if(now - lastNotifyTime > 5000) { // 5分間隔
         lastNotifyTime = now;
         if(Notification.permission === 'granted' && 'serviceWorker' in navigator) {
           navigator.serviceWorker.ready.then(reg => {
