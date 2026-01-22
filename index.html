@@ -14,8 +14,6 @@
       --primary-hover: #1565c0;
       --text-color: #e0e0e0;
       --card-bg: #1f1f1f;
-      --border-radius: 12px;
-      --shadow-color: rgba(0, 0, 0, 0.6);
     }
 
     * { box-sizing: border-box; }
@@ -29,6 +27,8 @@
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      /* 誤操作防止のため選択不可に */
+      user-select: none; 
     }
 
     main { max-width: 480px; width: 100%; }
@@ -39,106 +39,90 @@
       margin-bottom: 1rem;
       text-align: center;
       color: var(--primary-color);
-      text-shadow: 0 0 8px var(--primary-color);
     }
 
     .card {
       background-color: var(--card-bg);
-      border-radius: var(--border-radius);
+      border-radius: 12px;
       padding: 1.5rem 2rem;
-      box-shadow: 0 6px 12px var(--shadow-color);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.6);
       margin-bottom: 1.5rem;
     }
     
     .hidden { display: none; }
 
-    label {
-      display: block;
-      font-size: 0.9rem;
-      margin-bottom: 0.3rem;
-      color: #bbb;
-    }
-
-    input[type="number"],
-    input[type="text"] {
-      width: 100%;
-      padding: 0.6rem 0.9rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
-      background-color: #2c2c2c;
-      color: var(--text-color);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
-      margin-bottom: 1rem;
+    label { display: block; font-size: 0.9rem; margin-bottom: 0.3rem; color: #bbb; }
+    
+    input[type="number"], input[type="text"] {
+      width: 100%; padding: 0.6rem; font-size: 1rem; border-radius: 8px; border: none;
+      background-color: #2c2c2c; color: var(--text-color); margin-bottom: 1rem;
+      user-select: text; /* 入力欄は選択可能に */
     }
 
     button {
-      padding: 0.65rem 1.2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      color: white;
-      background-color: var(--primary-color);
-      border: none;
-      border-radius: 32px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px var(--primary-color);
-      transition: all 0.3s ease;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
+      padding: 0.65rem 1.2rem; font-size: 1rem; font-weight: 600; color: white;
+      background-color: var(--primary-color); border: none; border-radius: 32px;
+      cursor: pointer; transition: 0.3s; margin-right: 0.5rem; margin-bottom: 0.5rem;
     }
     button:hover { background-color: var(--primary-hover); }
 
-    #distance-info {
-      text-align: center;
-      font-size: 1.1rem;
+    /* ポケットモード切替ボタン */
+    #btn-pocket-mode {
+      width: 100%;
+      background-color: #00897b;
+      padding: 1rem;
       margin-bottom: 1rem;
-      color: #aaa;
-      background: #252525;
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    #checklist ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #checklist li {
-      background-color: #2a2a2a;
-      border-radius: 8px;
-      padding: 0.8rem 1rem;
-      margin-bottom: 0.8rem;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
-      word-break: break-all;
-    }
-    
-    #checklist input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      accent-color: var(--primary-color);
-      flex-shrink: 0;
+      justify-content: center;
+      gap: 10px;
     }
 
-    .list-text {
-      flex-grow: 1;
-      cursor: pointer;
-      color: var(--text-color);
-      font-size: 1rem;
+    /* ポケットモード用の黒いオーバーレイ */
+    #pocket-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: black;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      text-align: center;
     }
 
-    .flex-row { display: flex; gap: 5px; align-items: flex-start; }
-    #new-item { flex-grow: 1; margin-bottom: 0; }
-    #btn-add-item { white-space: nowrap; margin-top: 0; }
+    #distance-info {
+      text-align: center; font-size: 1.1rem; margin-bottom: 1rem;
+      color: #aaa; background: #252525; padding: 10px; border-radius: 8px;
+    }
+
+    #checklist ul { list-style: none; padding: 0; margin: 0; }
+    #checklist li {
+      background-color: #2a2a2a; border-radius: 8px; padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.8rem;
+    }
+    #checklist input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary-color); }
+    .list-text { flex-grow: 1; color: var(--text-color); font-size: 1rem; }
+    .flex-row { display: flex; gap: 5px; }
+    #new-item { flex-grow: 1; }
   </style>
 </head>
 <body>
+
+  <div id="pocket-overlay" class="hidden">
+    <div style="font-size: 3rem;">🔒</div>
+    <p>ポケットモード稼働中</p>
+    <p id="overlay-status" style="font-size: 0.8rem; margin-top: 20px;">計測中...</p>
+    <p style="margin-top: 50px; color: #555;">ダブルタップで解除</p>
+  </div>
+
   <main>
     <h1>位置連動忘れ物チェック</h1>
+
+    <button id="btn-pocket-mode">
+      <span>🚀 出発モード (画面常時点灯)</span>
+    </button>
 
     <div id="distance-info">位置情報を取得中...</div>
 
@@ -146,189 +130,179 @@
       <h2>忘れ物リスト</h2>
       <ul id="items-list"></ul>
       <div class="flex-row" style="margin-top: 1rem;">
-        <input type="text" id="new-item" placeholder="アイテムを追加 (例: 鍵)" />
+        <input type="text" id="new-item" placeholder="アイテムを追加" />
         <button id="btn-add-item">追加</button>
       </div>
     </section>
 
-    <button id="btn-toggle-setup" style="background-color: #444; font-size: 0.8rem; margin: 0 auto 1.5rem auto; display: block;">場所の設定を変更</button>
+    <button id="btn-toggle-setup" style="background-color: #444; font-size: 0.8rem; margin: 0 auto; display: block;">設定変更</button>
     
-    <section id="setup-section" class="card hidden">
+    <section id="setup-section" class="card hidden" style="margin-top: 1rem;">
       <label>自宅の緯度<input type="number" step="0.000001" id="home-lat" /></label>
       <label>自宅の経度<input type="number" step="0.000001" id="home-lng" /></label>
-      <label>通知する距離 (メートル)<input type="number" id="meters-input" value="20" /></label>
-      <button id="btn-get-location">現在地を取得</button>
-      <button id="btn-save-home">設定を保存</button>
+      <label>通知距離(m)<input type="number" id="meters-input" value="20" /></label>
+      <button id="btn-get-location">現在地取得</button>
+      <button id="btn-save-home">保存</button>
     </section>
   </main>
 
 <script>
-// --- Cookie制御 (リロード対策) ---
-function setCookie(name, value) {
-  const d = new Date();
-  d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000)); // 1年間保持
-  document.cookie = `${name}=${encodeURIComponent(value)};expires=${d.toUTCString()};path=/;SameSite=Strict`;
-}
+// --- CookieUtil ---
+function setCookie(n,v){const d=new Date();d.setTime(d.getTime()+(365*24*60*60*1000));document.cookie=`${n}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/;SameSite=Strict`;}
+function getCookie(n){const eq=n+"=";const ca=document.cookie.split(';');for(let i=0;i<ca.length;i++){let c=ca[i].trim();if(c.indexOf(eq)===0)return decodeURIComponent(c.substring(eq.length,c.length));}return "";}
 
-function getCookie(name) {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i].trim();
-    if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
-  }
-  return "";
-}
+// --- DOM ---
+const els = {
+  hLat: document.getElementById('home-lat'),
+  hLng: document.getElementById('home-lng'),
+  meter: document.getElementById('meters-input'),
+  dist: document.getElementById('distance-info'),
+  list: document.getElementById('items-list'),
+  input: document.getElementById('new-item'),
+  setup: document.getElementById('setup-section'),
+  pocketBtn: document.getElementById('btn-pocket-mode'),
+  overlay: document.getElementById('pocket-overlay'),
+  overlayStatus: document.getElementById('overlay-status')
+};
 
-// --- DOM要素 ---
-const homeLatInput = document.getElementById('home-lat');
-const homeLngInput = document.getElementById('home-lng');
-const metersInput = document.getElementById('meters-input');
-const distanceInfo = document.getElementById('distance-info');
-const itemsList = document.getElementById('items-list');
-const newItemInput = document.getElementById('new-item');
-const setupSection = document.getElementById('setup-section');
-const btnToggleSetup = document.getElementById('btn-toggle-setup');
-
-// --- 距離計算 (Haversine公式) ---
+// --- Haversine ---
 function getDistance(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2)**2;
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  const R=6371000, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*(2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
 }
 
-// --- 【重要】リストの中身を表示する関数 ---
-function renderChecklist() {
-  const json = getCookie('checklist');
-  const items = json ? JSON.parse(json) : [];
-  
-  itemsList.innerHTML = ''; // 一旦クリアして再描画
-
-  items.forEach((itemText, idx) => {
-    const li = document.createElement('li');
-    
-    // チェックボックス作成
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.id = `item-${idx}`;
-    
-    // テキスト部分作成
-    const label = document.createElement('label');
-    label.className = 'list-text';
-    label.htmlFor = `item-${idx}`;
-    label.textContent = itemText; // ← ここで追加されたもの自体を表示
-
-    // チェックされたらCookieから消して再描画
-    cb.addEventListener('change', () => {
-      if (cb.checked) {
-        setTimeout(() => {
-          const updatedItems = items.filter((_, i) => i !== idx);
-          setCookie('checklist', JSON.stringify(updatedItems));
-          renderChecklist();
-        }, 250);
-      }
-    });
-
-    li.appendChild(cb);
-    li.appendChild(label);
-    itemsList.appendChild(li);
+// --- Checklist Logic ---
+function renderList() {
+  const items = JSON.parse(getCookie('checklist') || "[]");
+  els.list.innerHTML = '';
+  items.forEach((txt, i) => {
+    const li=document.createElement('li'), cb=document.createElement('input'), lbl=document.createElement('label');
+    cb.type='checkbox'; cb.id=`i-${i}`;
+    lbl.className='list-text'; lbl.htmlFor=`i-${i}`; lbl.textContent=txt;
+    cb.onchange=()=>{ 
+      if(cb.checked) setTimeout(()=>{
+        setCookie('checklist', JSON.stringify(items.filter((_,idx)=>idx!==i))); renderList();
+      },250);
+    };
+    li.append(cb, lbl); els.list.append(li);
   });
 }
 
-// --- 位置計測 ---
-let lastNotifyTime = 0;
-function checkLocation() {
-  const hLat = parseFloat(getCookie('homeLat'));
-  const hLng = parseFloat(getCookie('homeLng'));
-  const threshold = parseFloat(getCookie('threshold')) || 20;
-
-  if (isNaN(hLat) || isNaN(hLng)) {
-    distanceInfo.textContent = "自宅の位置を設定してください";
-    return;
+// --- Wake Lock (画面常時点灯) ---
+let wakeLock = null;
+async function requestWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    console.log('Wake Lock active');
+    wakeLock.addEventListener('release', () => console.log('Wake Lock released'));
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+    alert("常時点灯機能がサポートされていないか、エラーが発生しました。");
   }
+}
 
-  navigator.geolocation.getCurrentPosition((pos) => {
+// --- Location & Notify ---
+let lastNotify = 0;
+function checkLocation() {
+  const hLat=parseFloat(getCookie('homeLat')), hLng=parseFloat(getCookie('homeLng')), th=parseFloat(getCookie('threshold'))||20;
+  if(isNaN(hLat)){ els.dist.textContent="自宅未設定"; return; }
+
+  navigator.geolocation.getCurrentPosition(pos => {
     const dist = getDistance(hLat, hLng, pos.coords.latitude, pos.coords.longitude);
-    distanceInfo.textContent = `現在：自宅から ${dist.toFixed(1)}m`;
+    const msg = `自宅から ${dist.toFixed(1)}m`;
+    els.dist.textContent = msg;
+    els.overlayStatus.textContent = msg; // 黒画面にも表示
 
-    // 離れたら通知
-    if (dist > threshold) {
+    if(dist > th) {
       const now = Date.now();
-      if (now - lastNotifyTime > 300000) { // 5分間隔
-        lastNotifyTime = now;
-        
-        if (Notification.permission === 'granted') {
-          // ▼▼▼ 変更: Service Worker経由で通知を出す ▼▼▼
-          navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification("忘れ物はないですか？", { 
-              body: `自宅から ${dist.toFixed(0)}m 離れました。リストを確認！`,
-              tag: 'forget-check',
-              icon: 'image/gps.ico', // アイコンがあれば指定
-              vibrate: [200, 100, 200] // バイブレーション（Android等）
+      if(now - lastNotify > 300000) { // 5分間隔
+        lastNotify = now;
+        if(Notification.permission==='granted'){
+          // Service Worker経由で通知
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(reg => {
+              reg.showNotification("出発しましたか？", {
+                body: `${dist.toFixed(0)}m 移動しました。忘れ物はありませんか？`,
+                tag: 'check-alert',
+                icon: 'image/gps.ico',
+                vibrate: [500, 200, 500]
+              });
             });
-          });
+          }
         }
       }
     }
-  }, null, { enableHighAccuracy: true });
+  }, err => {
+    console.warn(err);
+    els.dist.textContent = "GPS取得エラー";
+  }, { enableHighAccuracy: true, maximumAge: 0 });
 }
 
-// --- ボタン操作 ---
-document.getElementById('btn-get-location').addEventListener('click', () => {
-  navigator.geolocation.getCurrentPosition(pos => {
-    homeLatInput.value = pos.coords.latitude.toFixed(6);
-    homeLngInput.value = pos.coords.longitude.toFixed(6);
-  });
-});
-
-document.getElementById('btn-save-home').addEventListener('click', () => {
-  setCookie('homeLat', homeLatInput.value);
-  setCookie('homeLng', homeLngInput.value);
-  setCookie('threshold', metersInput.value);
-  alert("自宅の位置と距離設定を保存しました。");
-  setupSection.classList.add('hidden');
-});
-
-document.getElementById('btn-add-item').addEventListener('click', () => {
-  const val = newItemInput.value.trim();
-  if (!val) return;
+// --- Event Listeners ---
+// 出発モード開始
+els.pocketBtn.addEventListener('click', async () => {
+  if (Notification.permission !== 'granted') await Notification.requestPermission();
   
-  const json = getCookie('checklist');
-  const items = json ? JSON.parse(json) : [];
-  items.push(val); // 配列に追加
+  // 画面を黒くする
+  els.overlay.classList.remove('hidden');
   
-  setCookie('checklist', JSON.stringify(items)); // Cookieへ保存
-  newItemInput.value = '';
-  renderChecklist(); // 画面を更新して表示
+  // 常時点灯をリクエスト
+  if ('wakeLock' in navigator) requestWakeLock();
+  
+  // フルスクリーン化 (任意)
+  if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
 });
 
-btnToggleSetup.addEventListener('click', () => {
-  setupSection.classList.toggle('hidden');
-});
-
-// --- 初期ロード ---
-window.onload = () => {
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('SW Registered!', reg))
-      .catch(err => console.log('SW Registration failed', err));
+// ダブルタップで解除
+let lastTap = 0;
+els.overlay.addEventListener('click', (e) => {
+  const cur = new Date().getTime();
+  if (cur - lastTap < 300) {
+    // ダブルタップ検知
+    els.overlay.classList.add('hidden');
+    if (wakeLock) wakeLock.release();
+    if (document.exitFullscreen) document.exitFullscreen();
   }
+  lastTap = cur;
+});
 
+// Setup Buttons
+document.getElementById('btn-get-location').onclick = () => navigator.geolocation.getCurrentPosition(p=>{
+  els.hLat.value=p.coords.latitude.toFixed(6); els.hLng.value=p.coords.longitude.toFixed(6);
+});
+document.getElementById('btn-save-home').onclick = () => {
+  setCookie('homeLat',els.hLat.value); setCookie('homeLng',els.hLng.value); setCookie('threshold',els.meter.value);
+  alert("保存しました"); els.setup.classList.add('hidden');
+};
+document.getElementById('btn-add-item').onclick = () => {
+  if(!els.input.value.trim())return;
+  const arr=JSON.parse(getCookie('checklist')||"[]"); arr.push(els.input.value);
+  setCookie('checklist',JSON.stringify(arr)); els.input.value=''; renderList();
+};
+document.getElementById('btn-toggle-setup').onclick=()=>els.setup.classList.toggle('hidden');
 
-  if (Notification.permission !== 'denied') Notification.requestPermission();
+// --- Init ---
+window.onload = () => {
+  // SW登録
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
   
-  // Cookieから過去のデータを復元
-  homeLatInput.value = getCookie('homeLat');
-  homeLngInput.value = getCookie('homeLng');
-  metersInput.value = getCookie('threshold') || 20;
+  // データ復元
+  els.hLat.value = getCookie('homeLat');
+  els.hLng.value = getCookie('homeLng');
+  els.meter.value = getCookie('threshold') || 20;
+  if(!getCookie('homeLat')) els.setup.classList.remove('hidden');
   
-  if (!getCookie('homeLat')) setupSection.classList.remove('hidden');
-  
-  renderChecklist(); // 読み込み時にリストを表示
+  renderList();
   checkLocation();
-  setInterval(checkLocation, 30000); // 30秒ごとに距離測定
+  setInterval(checkLocation, 10000); // 10秒ごとにチェック
+  
+  // ページが隠れた後に戻ってきたときにWakeLockが切れているので再取得する処理
+  document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+      await requestWakeLock();
+    }
+  });
 };
 </script>
 </body>
